@@ -16,7 +16,7 @@ Built with a **FastAPI backend** and a **Streamlit frontend**.
 ---
 
 
-## ⚙️ Workflow Overview
+##  Workflow Overview
 
 ```plaintext
 User Query → Retrieve relevant docs from Pinecone → Combine with context →
@@ -25,7 +25,7 @@ LLM (OpenAI GPT) generates final answer → Response displayed on Streamlit
 
 ---
 
-## 🔧 Setup Instructions
+## Setup Instructions
 
 ### 1. Clone the Repository
 ```bash
@@ -57,21 +57,23 @@ PINECONE_INDEX=your pinecone index
 
 ---
 
-## 🧹 Running the Project
+##  Running the Project
 
 ### Start Backend (FastAPI)
 ```bash
+cd backend
 uvicorn api:app --reload --host 0.0.0.0 --port 8000
 ```
 
 ### Start Frontend (Streamlit)
 ```bash
+cd frontend
 streamlit run streamlit_app.py
 ```
 
 ---
 
-## 🗃️ Embedding Documents
+## Embedding Documents
 
 To embed and upsert documents into Pinecone, run:
 ```bash
@@ -81,7 +83,7 @@ python ingest.py
 ---
 
 
-## 🧱 Tech Stack
+## Tech Stack
 
 | Layer | Technology |
 |-------|-------------|
