@@ -1,5 +1,5 @@
 import os
-from utils import load_documents_from_dir, split_documents, get_embeddings
+from backend.utils import load_documents_from_dir, split_documents, get_embeddings
 from dotenv import load_dotenv
 from pinecone import Pinecone, ServerlessSpec
 
