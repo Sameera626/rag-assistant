@@ -56,29 +56,74 @@ jobs:
         username: ${{ secrets.DOCKER_REGISTRY_USERNAME }}
         password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
 
-    # step 8: Buil and Push backend Docker Image to ACR
+    # step 8: Buil and Push backend Docker Image to Azure Container Registry
     - name: Build and Push Docker Image(backend)
       run: |
         docker build -t sameeraragregistry.azurecr.io/rag-assistant-backend:latest ./backend
         docker push sameeraragregistry.azurecr.io/rag-assistant-backend:latest
     
-    # step 9: Build and Push frontend Docker Image to ACR
+    # step 9: Build and Push frontend Docker Image to Azure Container Registry
     - name: Build and Push Docker Image(frontend)
       run: |
         docker build -t sameeraragregistry.azurecr.io/rag-assistant-frontend:latest ./frontend
         docker push sameeraragregistry.azurecr.io/rag-assistant-frontend:latest
 
-    # step 10: Deploy Dcoker Images to Azure Container Apps
-    - name: Deploy multicontainer app 
+    # step 10: Deploy Backend Container APP to Azure Container APP
+    - name: Deploy Backend Container APP
       uses: azure/CLI@v1
-      with:
+      with: 
         azcliversion: 2.60.0
         inlineScript: |
-          az containerapp update \
-          --name rag-assistant-app \
-          --resource-group rag-assintant-rg \
-          --image sameeraragregistry.azurecr.io/rag-assistant-backend:latest \
-          --image sameeraragregistry.azurecr.io/rag-assistant-frontend:latest
+          # Check if backend app exists
+          BACKEND_EXISTS=$(az containerapp show --name rag-assistant-backend --resource-group rag-assintant-rg --query "name" -o tsv || echo "")
+          if [-z "BACKEND_EXISTS"]: then
+            az containerapp create \
+            --name rag-assistant-backend \
+            --resource-group rag-assintant-rg \
+            --environment rag-assistant-env \
+            --image sameeraragregistry.azurecr.io/rag-assistant-backend:latest \
+            --target-port 8000 \
+            --ingress external \
+            --registry-server sameeraragregistry.azurecr.io \
+            --registry-username ${{ secrets.DOCKER_REGISTRY_USERNAME }} \
+            --registry-password ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+
+          else
+            az containerapp update \
+            --name rag-assistant-backend \
+            --resource-group rag-assistant-rg \
+            --image sameeraragregistry.azurecr.io/rag-assistant-backend:latest
+
+          fi
+
+    # step 11: Deploy Frontend Container APP to Azure Container APP
+    - name: Deploy Frontend Container APP
+      uses: azure/CLI@v1
+      with: 
+        azcliversion: 2.60.0
+        inlineScript: |
+          # Check if frontend app exists
+          FRONTEND_EXISTS=$(az containerapp show --name rag-assistant-frontend --resource-group rag-assintant-rg --query "name" -o tsv || echo "")
+          if [-z "FRONTEND_EXISTS"]: then
+            az containerapp create \
+            --name rag-assistant-frontend \
+            --resource-group rag-assintant-rg \
+            --environment rag-assistant-env \
+            --image sameeraragregistry.azurecr.io/rag-assistant-frontend:latest \
+            --target-port 8501 \
+            --ingress external \
+            --registry-server sameeraragregistry.azurecr.io \
+            --registry-username ${{ secrets.DOCKER_REGISTRY_USERNAME }} \
+            --registry-password ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+
+          else
+            az containerapp update \
+            --name rag-assistant-frontend \
+            --resource-group rag-assistant-rg \
+            --image sameeraragregistry.azurecr.io/rag-assistant-frontend:latest
+
+          fi
+    
 
     
 
