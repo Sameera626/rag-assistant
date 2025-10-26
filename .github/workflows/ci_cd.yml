@@ -38,6 +38,7 @@ jobs:
     # step 5: Lint frontend code
     - name: Lint Streamlit app
       run: |
+        cd frontend
         python -m py_compile streamlit_app.py
 
     # step 6: Deploy to server
