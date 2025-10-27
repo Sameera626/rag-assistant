@@ -108,7 +108,7 @@ jobs:
             echo "Creating new backend container app..."
             az containerapp create \
               --name rag-assistant-backend \
-              --resource-group rag-assistant-rg \
+              --resource-group rag-assintant-rg \
               --environment rag-assistant-env \
               --image sameeraragregistry.azurecr.io/rag-assistant-backend:latest \
               --target-port 8000 \
@@ -150,7 +150,7 @@ jobs:
             echo "Creating new frontend container app..."
             az containerapp create \
               --name rag-assistant-frontend \
-              --resource-group rag-assistant-rg \
+              --resource-group rag-assintant-rg \
               --environment rag-assistant-env \
               --image sameeraragregistry.azurecr.io/rag-assistant-frontend:latest \
               --target-port 8501 \
