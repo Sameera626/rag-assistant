@@ -41,6 +41,16 @@ jobs:
         cd frontend
         python -m py_compile streamlit_app.py
 
+    # NEW STEP: Clear Azure CLI cache before any Azure operations
+    - name: Clear Azure CLI Cache
+      run: |
+        echo "Cleaning up Azure CLI cache and token files..."
+        rm -rf ~/.azure
+        rm -rf /tmp/azcli-*
+        # Also clean any Python cache that might contain pickled objects
+        find . -name "*.pyc" -delete
+        find . -name "__pycache__" -type d -exec rm -rf {} + 2>/dev/null || true
+
     # step 6: Azure Login (authenticate before any az commands)
     - name: Azure Login
       uses: azure/login@v1
@@ -78,18 +88,19 @@ jobs:
       with: 
         azcliversion: 2.60.0
         inlineScript: |
+          # Clean any existing Azure config
+          export AZURE_CONFIG_DIR="/tmp/azcli-backend-$$"
+          mkdir -p "$AZURE_CONFIG_DIR"
+          
           # Login with service principal using AZURE_CREDENTIALS
           az login --service-principal \
             -u "${{ fromJson(secrets.AZURE_CREDENTIALS).clientId }}" \
             -p "${{ fromJson(secrets.AZURE_CREDENTIALS).clientSecret }}" \
-            --tenant "${{ fromJson(secrets.AZURE_CREDENTIALS).tenantId }}"
+            --tenant "${{ fromJson(secrets.AZURE_CREDENTIALS).tenantId }}" \
+            --output none
           
           # Set the subscription
           az account set --subscription "${{ fromJson(secrets.AZURE_CREDENTIALS).subscriptionId }}"
-          
-          # Isolate Azure CLI config to avoid loading incompatible token cache
-          export AZURE_CONFIG_DIR="${AZURE_CONFIG_DIR:-/tmp/azcli-backend}"
-          mkdir -p "$AZURE_CONFIG_DIR"
           
           # Check if backend app exists
           BACKEND_EXISTS=$(az containerapp show --name rag-assistant-backend --resource-group rag-assistant-rg --query "name" -o tsv 2>/dev/null || echo "")
@@ -119,18 +130,19 @@ jobs:
       with: 
         azcliversion: 2.60.0
         inlineScript: |
+          # Clean any existing Azure config
+          export AZURE_CONFIG_DIR="/tmp/azcli-frontend-$$"
+          mkdir -p "$AZURE_CONFIG_DIR"
+          
           # Login with service principal using AZURE_CREDENTIALS
           az login --service-principal \
             -u "${{ fromJson(secrets.AZURE_CREDENTIALS).clientId }}" \
             -p "${{ fromJson(secrets.AZURE_CREDENTIALS).clientSecret }}" \
-            --tenant "${{ fromJson(secrets.AZURE_CREDENTIALS).tenantId }}"
+            --tenant "${{ fromJson(secrets.AZURE_CREDENTIALS).tenantId }}" \
+            --output none
           
           # Set the subscription
           az account set --subscription "${{ fromJson(secrets.AZURE_CREDENTIALS).subscriptionId }}"
-          
-          # Isolate Azure CLI config to avoid loading incompatible token cache
-          export AZURE_CONFIG_DIR="${AZURE_CONFIG_DIR:-/tmp/azcli-frontend}"
-          mkdir -p "$AZURE_CONFIG_DIR"
           
           # Check if frontend app exists
           FRONTEND_EXISTS=$(az containerapp show --name rag-assistant-frontend --resource-group rag-assistant-rg --query "name" -o tsv 2>/dev/null || echo "")
