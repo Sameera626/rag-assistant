@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-API_URL = "https://rag-assistant-backend.happybeach-9d251cf7.southeastasia.azurecontainerapps.io/query"
+API_URL = os.getenv('API_URL')  
 
 st.title('RAG Assistant')
 
