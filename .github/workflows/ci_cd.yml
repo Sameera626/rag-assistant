@@ -121,7 +121,15 @@ jobs:
             az containerapp update \
               --name rag-assistant-backend \
               --resource-group rag-assistant-rg \
-              --image sameeraragregistry.azurecr.io/rag-assistant-backend:latest
+              --image sameeraragregistry.azurecr.io/rag-assistant-backend:latest \
+              --environment rag-assistant-env \
+              --set-env-vars OPENAI_API_KEY="${{ secrets.OPENAI_API_KEY }}" \
+                             EMBEDDING_MODEL="${{ secrets.EMBEDDING_MODEL }}" \
+                             LLM_MODEL="${{ secrets.LLM_MODEL }}" \
+                             PINECONE_API_KEY="${{ secrets.PINECONE_API_KEY }}" \
+                             PINECONE_INDEX="${{ secrets.PINECONE_INDEX }}" \
+                             PINECONE_CLOUD="${{ secrets.PINECONE_CLOUD }}" \
+                             PINECONE_REGION="${{ secrets.PINECONE_REGION }}"
           fi
 
     # step 12: Deploy Frontend Container APP to Azure Container APP
@@ -164,4 +172,6 @@ jobs:
               --name rag-assistant-frontend \
               --resource-group rag-assistant-rg \
               --image sameeraragregistry.azurecr.io/rag-assistant-frontend:latest
+              --environment rag-assistant-env \
+              --set-env-vars API_URL="${{ secrets.API_URL }}"
           fi
