@@ -120,7 +120,7 @@ jobs:
             echo "Updating existing backend container app..."
             az containerapp update \
               --name rag-assistant-backend \
-              --resource-group rag-assistant-rg \
+              --resource-group rag-assintant-rg \
               --image sameeraragregistry.azurecr.io/rag-assistant-backend:latest \
               --environment rag-assistant-env \
               --set-env-vars OPENAI_API_KEY="${{ secrets.OPENAI_API_KEY }}" \
@@ -170,7 +170,7 @@ jobs:
             echo "Updating existing frontend container app..."
             az containerapp update \
               --name rag-assistant-frontend \
-              --resource-group rag-assistant-rg \
+              --resource-group rag-assintant-rg \
               --image sameeraragregistry.azurecr.io/rag-assistant-frontend:latest
               --environment rag-assistant-env \
               --set-env-vars API_URL="${{ secrets.API_URL }}"
