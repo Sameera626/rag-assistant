@@ -8,6 +8,10 @@ load_dotenv()
 
 API_URL = os.getenv('API_URL')  
 
+if not API_URL or API_URL == 'None':
+    st.error("API_URL is not set. Please set it in the .env file.")
+    st.stop()
+
 st.title('RAG Assistant')
 
 # Initialize chat history
