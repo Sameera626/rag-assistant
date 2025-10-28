@@ -115,7 +115,14 @@ jobs:
               --ingress external \
               --registry-server sameeraragregistry.azurecr.io \
               --registry-username ${{ secrets.DOCKER_REGISTRY_USERNAME }} \
-              --registry-password ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+              --registry-password ${{ secrets.DOCKER_REGISTRY_PASSWORD }} \
+              --set-env-vars OPENAI_API_KEY="${{ secrets.OPENAI_API_KEY }}" \
+                          EMBEDDING_MODEL="${{ secrets.EMBEDDING_MODEL }}" \
+                          LLM_MODEL="${{ secrets.LLM_MODEL }}" \
+                          PINECONE_API_KEY="${{ secrets.PINECONE_API_KEY }}" \
+                          PINECONE_INDEX="${{ secrets.PINECONE_INDEX }}" \
+                          PINECONE_CLOUD="${{ secrets.PINECONE_CLOUD }}" \
+                          PINECONE_REGION="${{ secrets.PINECONE_REGION }}"
           else
             echo "Updating existing backend container app..."
             az containerapp update \
@@ -165,7 +172,8 @@ jobs:
               --ingress external \
               --registry-server sameeraragregistry.azurecr.io \
               --registry-username ${{ secrets.DOCKER_REGISTRY_USERNAME }} \
-              --registry-password ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+              --registry-password ${{ secrets.DOCKER_REGISTRY_PASSWORD }} \
+              --set-env-vars API_URL="${{ secrets.API_URL }}"
           else
             echo "Updating existing frontend container app..."
             az containerapp update \
