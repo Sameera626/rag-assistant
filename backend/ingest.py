@@ -10,6 +10,7 @@ EMBED_MODEL = os.getenv('EMBEDDING_MODEL', 'text-embedding-3-small')
 PINECONE_API_KEY = os.getenv('PINECONE_API_KEY')
 PINECONE_INDEX = os.getenv('PINECONE_INDEX', 'langchain-demo')  
 
+
 def main():
     docs = load_documents_from_dir(DATA_DIR)
     print(f"Loaded {len(docs)} raw documents")
@@ -29,7 +30,6 @@ def main():
         print(meta)
         if 'text' not in meta:
             meta['text'] = chunk.page_content
-            # print(meta)
         metadatas.append(meta)
     vectors = emb.embed_documents(texts)
 
@@ -53,6 +53,7 @@ def main():
     pinecone_vectors = []
     for i, (vec, meta) in enumerate(zip(vectors, metadatas)):
         pinecone_vectors.append((str(i), vec, meta))
+
     for i in range(0, len(pinecone_vectors), 100):
         batch = pinecone_vectors[i:i+100]
         index.upsert(vectors=batch)
