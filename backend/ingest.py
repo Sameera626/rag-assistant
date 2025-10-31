@@ -1,5 +1,5 @@
 import os
-from backend.utils import load_documents_from_dir, split_documents, get_embeddings
+from utils import load_documents_from_dir, split_documents, get_embeddings
 from dotenv import load_dotenv
 from pinecone import Pinecone, ServerlessSpec
 
@@ -8,7 +8,8 @@ load_dotenv()
 DATA_DIR = './data'
 EMBED_MODEL = os.getenv('EMBEDDING_MODEL', 'text-embedding-3-small')
 PINECONE_API_KEY = os.getenv('PINECONE_API_KEY')
-PINECONE_INDEX = os.getenv('PINECONE_INDEX', 'langchain-demo')  # Set your Pinecone index name
+PINECONE_INDEX = os.getenv('PINECONE_INDEX', 'langchain-demo')  
+
 
 def main():
     docs = load_documents_from_dir(DATA_DIR)
@@ -29,7 +30,6 @@ def main():
         print(meta)
         if 'text' not in meta:
             meta['text'] = chunk.page_content
-            print(meta)
         metadatas.append(meta)
     vectors = emb.embed_documents(texts)
 
@@ -53,7 +53,10 @@ def main():
     pinecone_vectors = []
     for i, (vec, meta) in enumerate(zip(vectors, metadatas)):
         pinecone_vectors.append((str(i), vec, meta))
-    index.upsert(vectors=pinecone_vectors)
+
+    for i in range(0, len(pinecone_vectors), 100):
+        batch = pinecone_vectors[i:i+100]
+        index.upsert(vectors=batch)
     print(f'{len(pinecone_vectors)} vectors upserted to Pinecone index "{PINECONE_INDEX}"')
 
 if __name__ == '__main__':

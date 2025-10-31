@@ -1,17 +1,17 @@
-# 🧠 RAG Assistant - Document Query System
+#  RAG Assistant - AI-Powered Document Q&A System
 
 A Retrieval-Augmented Generation (RAG) prototype that enables intelligent question-answering over custom documents using **LangChain**, **Pinecone**, and **OpenAI Embeddings**.  
 Built with a **FastAPI backend** and a **Streamlit frontend**.
 
 ---
 
-## 🚀 Features
+##  Features
 
-- 📄 Document ingestion, splitting, and embedding using OpenAI
-- 📦 Vector storage and retrieval with Pinecone
-- 🧠 Context-aware responses powered by LLM (GPT)
-- 🔍 Semantic similarity search for accurate context
-- 💬 Interactive UI built with Streamlit
+-  Document ingestion, splitting, and embedding using OpenAI
+-  Vector storage and retrieval with Pinecone
+-  Context-aware responses powered by LLM (GPT)
+-  Semantic similarity search for accurate context
+-  Interactive UI built with Streamlit
 
 ---
 
@@ -53,11 +53,20 @@ EMBEDDING_MODEL=text-embedding-3-small
 LLM_MODEL=language model
 PINECONE_API_KEY=your_pinecone_api_key
 PINECONE_INDEX=your pinecone index
+PINECONE_CLOUD=your Pincone cloude service provider
+PINECONE_REGION=your VectorDB server region
+API_URL=Backend Url
 ```
 
 ---
 
 ##  Running the Project
+
+### Running Document Ingession Pipeline
+```bash
+cd backend 
+python -m ingest
+```
 
 ### Start Backend (FastAPI)
 ```bash
@@ -94,28 +103,16 @@ python ingest.py
 | Frontend | Streamlit |
 | Embedding | OpenAI Embeddings |
 | Language | Python |
+| Containerization | Docker |
+| Cloud Platform | Microsoft Azure |
+| Deployment Service | Azure Container Apps |
+| CI/CD | GitHub Actions |
 
 ---
 
 
-## 📈 Future Improvements
-
-- Add document upload via Streamlit UI  
-- Integrate FAISS as alternative vector store  
-- Deploy backend on Render and Streamlit UI on Vercel
-
----
-
-## 📜 License
+##  License
 
 MIT License © 2025 [Sameera Athukorala]
 
 ---
-
-## 🤝 Contributing
-
-Contributions, suggestions, and feedback are welcome!  
-Please open an issue or a pull request.
-
----
-
